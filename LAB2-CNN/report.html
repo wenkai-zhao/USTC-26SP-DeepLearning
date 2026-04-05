@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>report</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="report_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="report_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="report_files/libs/quarto-html/popper.min.js"></script>
+<script src="report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="report_files/libs/quarto-html/quarto-syntax-highlighting-7c69b197886ae2a34062761d21e44731.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="report_files/libs/bootstrap/bootstrap-6a36e770be2ba481f55f9f84c8370f7b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="深度学习导论作业-1-2-实验报告" class="level1">
+<h1>深度学习导论作业 1-2 实验报告</h1>
+<section id="实验任务" class="level2">
+<h2 class="anchored" data-anchor-id="实验任务">1. 实验任务</h2>
+<p>本实验以 Fashion-MNIST 数据集为对象，完成 CNN 图像分类任务，并通过控制变量法研究以下三个因素对模型性能的影响：</p>
+<ul>
+<li>网络深度</li>
+<li>卷积核大小</li>
+<li>池化方式</li>
+</ul>
+</section>
+<section id="实验环境" class="level2">
+<h2 class="anchored" data-anchor-id="实验环境">2. 实验环境</h2>
+<ul>
+<li>操作系统：Ubuntu 24.04</li>
+<li>Python 版本：3.10.20</li>
+<li>深度学习框架：PyTorch 2.11.0+cu130</li>
+<li>训练设备：NVIDIA GeForce RTX 5060 Ti</li>
+</ul>
+</section>
+<section id="数据集与预处理" class="level2">
+<h2 class="anchored" data-anchor-id="数据集与预处理">3. 数据集与预处理</h2>
+<p>Fashion-MNIST 是一个常用的服饰图像分类数据集，共包含 10 个类别，图像均为 <code>28×28</code> 的单通道灰度图像。</p>
+<ul>
+<li>样本规模：训练集 60,000 张，测试集 10,000 张。</li>
+<li>验证集划分：从训练集中划分出 10%（6,000 张）作为验证集</li>
+</ul>
+<p>数据预处理：</p>
+<ul>
+<li>将图像转换为张量，并将像素值缩放到 <span class="math inline">\([0, 1]\)</span></li>
+<li>按 Fashion-MNIST 的像素均值和方差进行标准化</li>
+</ul>
+</section>
+<section id="模型设计" class="level2">
+<h2 class="anchored" data-anchor-id="模型设计">4. 模型设计</h2>
+<p>本实验实现了一个可配置的 CNN 分类器，基本结构为：</p>
+<ol type="1">
+<li>多个卷积块串联，每个卷积块包含： <code>Conv2d + BatchNorm2d + ReLU + Pooling</code></li>
+<li>特征提取结束后使用 <code>AdaptiveAvgPool2d</code> 将卷积层输出的特征图调整为固定尺寸</li>
+<li>特征展平后进入两层全连接网络。为了缓解过拟合，在全连接层之间设置了 Dropout 层</li>
+</ol>
+<p>模型支持以下超参数配置：</p>
+<ul>
+<li><code>conv_blocks</code>：卷积块数量</li>
+<li><code>kernel_size</code>：卷积核大小</li>
+<li><code>pool_type</code>：池化方式，<code>max</code> 和 <code>avg</code></li>
+<li><code>base_channels</code>：初始通道数</li>
+<li><code>dropout</code>：全连接层 dropout 比例</li>
+</ul>
+</section>
+<section id="训练参数设置" class="level2">
+<h2 class="anchored" data-anchor-id="训练参数设置">5. 训练参数设置</h2>
+<p>实验使用以下配置：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"conv_blocks"</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"base_channels"</span><span class="fu">:</span> <span class="dv">32</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"kernel_size"</span><span class="fu">:</span> <span class="dv">3</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"pool_type"</span><span class="fu">:</span> <span class="st">"max"</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"dropout"</span><span class="fu">:</span> <span class="fl">0.25</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"learning_rate"</span><span class="fu">:</span> <span class="fl">0.001</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"batch_size"</span><span class="fu">:</span> <span class="dv">64</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"epochs"</span><span class="fu">:</span> <span class="dv">20</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"seed"</span><span class="fu">:</span> <span class="dv">42</span><span class="fu">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"sample_ratio"</span><span class="fu">:</span> <span class="fl">1.0</span><span class="fu">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"num_workers"</span><span class="fu">:</span> <span class="dv">4</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"device"</span><span class="fu">:</span> <span class="st">"cuda"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="对比实验结果" class="level2">
+<h2 class="anchored" data-anchor-id="对比实验结果">6. 对比实验结果</h2>
+<section id="网络深度实验" class="level3">
+<h3 class="anchored" data-anchor-id="网络深度实验">6.1 网络深度实验</h3>
+<p>固定卷积核为 <span class="math inline">\(3 \times 3\)</span>，池化方式为 Max Pooling：</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>模型</th>
+<th>conv_blocks</th>
+<th>best_val_acc</th>
+<th>test_acc</th>
+<th>test_loss</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>depth_2</td>
+<td>2</td>
+<td>0.8882</td>
+<td>0.8814</td>
+<td>0.3293</td>
+</tr>
+<tr class="even">
+<td>depth_3</td>
+<td>3</td>
+<td>0.9250</td>
+<td>0.9184</td>
+<td>0.2356</td>
+</tr>
+<tr class="odd">
+<td>depth_4</td>
+<td>4</td>
+<td>0.9330</td>
+<td>0.9246</td>
+<td>0.2422</td>
+</tr>
+</tbody>
+</table>
+<p>增加网络深度对性能提升非常明显。从 2 层增加到 3 层时，测试精度提升了近 3.7%。这说明深层网络能够提取出更加复杂的特征信息。在本实验中，4 层结构表现最好，准确率最高。</p>
+<p>不同网络深度下的训练与验证曲线见下图：</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/depth_curves.png" class="img-fluid figure-img"></p>
+<figcaption>网络深度对比曲线</figcaption>
+</figure>
+</div>
+</section>
+<section id="卷积核大小实验" class="level3">
+<h3 class="anchored" data-anchor-id="卷积核大小实验">6.2 卷积核大小实验</h3>
+<p>固定卷积块数为 2，池化方式为 Max Pooling</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>模型</th>
+<th>kernel_size</th>
+<th>best_val_acc</th>
+<th>test_acc</th>
+<th>test_loss</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>kernel_3</td>
+<td>3</td>
+<td>0.8870</td>
+<td>0.8853</td>
+<td>0.3255</td>
+</tr>
+<tr class="even">
+<td>kernel_5</td>
+<td>5</td>
+<td>0.9068</td>
+<td>0.9047</td>
+<td>0.2674</td>
+</tr>
+<tr class="odd">
+<td>kernel_7</td>
+<td>7</td>
+<td>0.9120</td>
+<td>0.9009</td>
+<td>0.2705</td>
+</tr>
+</tbody>
+</table>
+<p>在浅层网络中，较大的卷积核（如 <span class="math inline">\(5 \times 5\)</span>）表现优于 <span class="math inline">\(3 \times 3\)</span>。这是因为较大的卷积核感受野更大，更容易捕捉到服饰的整体轮廓。</p>
+</section>
+<section id="池化方式实验" class="level3">
+<h3 class="anchored" data-anchor-id="池化方式实验">6.3 池化方式实验</h3>
+<p>固定卷积块数为 2，卷积核为 <span class="math inline">\(3 \times 3\)</span>：</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>模型</th>
+<th>pool_type</th>
+<th>best_val_acc</th>
+<th>test_acc</th>
+<th>test_loss</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>pool_max</td>
+<td>max</td>
+<td>0.8842</td>
+<td>0.8853</td>
+<td>0.3315</td>
+</tr>
+<tr class="even">
+<td>pool_avg</td>
+<td>avg</td>
+<td>0.8822</td>
+<td>0.8792</td>
+<td>0.3422</td>
+</tr>
+</tbody>
+</table>
+<p>最大池化能够保留图像中像素响应最强烈的部分（如边缘、突出的纹理），而平均池化则会对特征进行平滑，导致一些细节丢失。在服饰分类任务中，最大池化显然更合适。</p>
+<p>不同池化方式下的训练与验证曲线见下图：</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/pool_curves.png" class="img-fluid figure-img"></p>
+<figcaption>池化方式对比曲线</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="错误样本与混淆矩阵分析" class="level2">
+<h2 class="anchored" data-anchor-id="错误样本与混淆矩阵分析">8. 错误样本与混淆矩阵分析</h2>
+<p>最佳模型（depth_4）的混淆矩阵见下图。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/depth_4_confusion_matrix.png" class="img-fluid figure-img"></p>
+<figcaption>最佳模型混淆矩阵</figcaption>
+</figure>
+</div>
+<p>从混淆矩阵可以看出，模型对以下类别的识别效果较好：</p>
+<ul>
+<li>Trouser：<code>988/1000</code></li>
+<li>Sandal：<code>987/1000</code></li>
+<li>Sneaker：<code>986/1000</code></li>
+<li>Bag：<code>982/1000</code></li>
+</ul>
+<p>这些类别在形状上较为稳定，与其他类别的视觉差异也较为明显，因此识别效果更好。</p>
+<p>模型在部分类别之间仍存在较为典型的混淆现象：</p>
+<ul>
+<li><code>Shirt</code> 容易被误判为 <code>T-shirt/top</code>，共有 <code>130</code> 个样本</li>
+<li><code>T-shirt/top</code> 容易被误判为 <code>Shirt</code>，共有 <code>57</code> 个样本</li>
+<li><code>Pullover</code> 和 <code>Coat</code> 之间存在明显混淆，分别有 <code>39</code> 和 <code>42</code> 个样本</li>
+<li><code>Ankle boot</code> 与 <code>Sneaker</code> 之间也存在一定混淆，尤其是 <code>Ankle boot -&gt; Sneaker</code> 有 <code>56</code> 个样本</li>
+</ul>
+<p>推测造成上述现象的原因主要是：</p>
+<ul>
+<li>部分类别在轮廓上较为接近，例如衬衫、T 恤、外套和套头衫均属于上衣类服饰</li>
+<li>Fashion-MNIST 图像分辨率较低，仅为 <code>28×28</code>，细节信息有限</li>
+</ul>
+<p>部分错分样本见下图。</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="assets/depth_4_misclassified_samples.png" class="img-fluid figure-img"></p>
+<figcaption>最佳模型错分样本</figcaption>
+</figure>
+</div>
+</section>
+<section id="实验结论" class="level2">
+<h2 class="anchored" data-anchor-id="实验结论">9. 实验结论</h2>
+<p>本实验围绕 Fashion-MNIST 图像分类任务构建并训练了卷积神经网络，并对网络深度、卷积核大小和池化方式进行了对比分析。实验结果表明：</p>
+<ul>
+<li>增加网络深度能够显著提升模型性能，是本实验中影响最大的因素。</li>
+<li>对于浅层网络，适当增大卷积核有助于提升分类准确率。</li>
+<li>最大池化优于平均池化，更适合保留服饰图像中的关键局部特征。</li>
+<li>错误分类主要发生在外观相似的上衣类服饰之间，说明模型已学到大部分有效特征，但仍受限于数据集分辨率和类别相似性。</li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
