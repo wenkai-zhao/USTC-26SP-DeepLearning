@@ -1,0 +1,46 @@
+cd /home/wenkai/deeplearning/LAB3-RNN
+
+# 主实验：RNN vs Attention
+/home/wenkai/deeplearning/.venv/bin/python train.py --model rnn --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 128 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+
+# 附加实验1：注意力头数
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 2 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 8 --max-vocab-size 30000 --max-seq-len 200
+
+# 附加实验2：词表大小
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 10000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 20000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+
+# 附加实验3：嵌入维度
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 64 --hidden-dim 128 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 256 --hidden-dim 256 --num-heads 8 --max-vocab-size 30000 --max-seq-len 200
+
+# 附加实验4：学习率
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --learning-rate 1e-4 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --learning-rate 1e-3 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --learning-rate 1e-2 --max-vocab-size 30000 --max-seq-len 200
+
+# 附加实验5：层数
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --num-layers 1 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --num-layers 2 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --num-layers 3 --max-vocab-size 30000 --max-seq-len 200
+
+# 可选附加实验：位置编码
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200
+/home/wenkai/deeplearning/.venv/bin/python train.py --model attention --epochs 20 --batch-size 128 --embed-dim 128 --hidden-dim 256 --num-heads 4 --max-vocab-size 30000 --max-seq-len 200 --disable-positional-encoding
+
+# 批量运行
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite full --epochs 20 --batch-size 128 --sample-ratio 1.0
+
+# 按组批量运行
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite main --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite heads --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite vocab --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite embed --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite lr --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite layers --epochs 20 --batch-size 128 --sample-ratio 1.0
+/home/wenkai/deeplearning/.venv/bin/python experiments.py --suite position --epochs 20 --batch-size 128 --sample-ratio 1.0
